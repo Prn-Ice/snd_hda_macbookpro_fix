@@ -904,8 +904,8 @@ static void cs_8409_setup_amps12(struct hda_codec *codec)
                 // use reduced volume - from 0x48 to 0x80 - same reduction as for MAXs -24dB
                 //cs_8409_setup_amp_ssm3(codec, 0x28, 0x80);
                 //cs_8409_setup_amp_ssm3(codec, 0x2a, 0x80);
-                cs_8409_setup_amp_ssm3(codec, 0x28, 0x20, 0x00);
-                cs_8409_setup_amp_ssm3(codec, 0x2a, 0x30, 0x00);
+                cs_8409_setup_amp_ssm3(codec, 0x28, 0x30, 0x00);
+                cs_8409_setup_amp_ssm3(codec, 0x2a, 0x40, 0x00);
         }
         else {
                 dev_info(hda_codec_dev(codec), "UNKNOWN subsystem id 0x%08x",codec->core.subsystem_id);
@@ -1014,8 +1014,8 @@ static void cs_8409_setup_amps34(struct hda_codec *codec)
                 // use reduced volume - from 0x48 to 0x80 - same reduction as for MAXs -24dB
                 //cs_8409_setup_amp_ssm3(codec, 0x2c, 0x80);
                 //cs_8409_setup_amp_ssm3(codec, 0x2e, 0x80);
-                cs_8409_setup_amp_ssm3(codec, 0x2c, 0x20, 0x01);
-                cs_8409_setup_amp_ssm3(codec, 0x2e, 0x30, 0x01);
+                cs_8409_setup_amp_ssm3(codec, 0x2c, 0x30, 0x01);
+                cs_8409_setup_amp_ssm3(codec, 0x2e, 0x40, 0x01);
         }
         else {
                 dev_info(hda_codec_dev(codec), "UNKNOWN subsystem id 0x%08x",codec->core.subsystem_id);
