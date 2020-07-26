@@ -886,9 +886,9 @@ static void play_setup_TDM_amps12(struct hda_codec *codec, int setrate)
 }
 
 
-static void cs_8409_setup_amp_max(struct hda_codec *codec, int amp_address, int amp_volume);
+static void cs_8409_setup_amp_max(struct hda_codec *codec, int amp_address, int amp_volume, int channel);
 
-static void cs_8409_setup_amp_ssm3(struct hda_codec *codec, int amp_address, int amp_volume);
+static void cs_8409_setup_amp_ssm3(struct hda_codec *codec, int amp_address, int amp_volume, int channel);
 
 static void cs_8409_setup_amps12(struct hda_codec *codec)
 {
@@ -896,16 +896,16 @@ static void cs_8409_setup_amps12(struct hda_codec *codec)
                 // use reduced volume - from 0x01 to 0x30 - now passing as argument
                 //cs_8409_setup_amp_max(codec, 0x64, 0x30);
                 //cs_8409_setup_amp_max(codec, 0x62, 0x30);
-                cs_8409_setup_amp_max(codec, 0x64, 0x01);
-                cs_8409_setup_amp_max(codec, 0x62, 0x01);
+                cs_8409_setup_amp_max(codec, 0x64, 0x01, 0x00);
+                cs_8409_setup_amp_max(codec, 0x62, 0x01, 0x00);
         }
         else if (codec->core.subsystem_id == 0x106b3300 || codec->core.subsystem_id == 0x106b3600) {
                 //setup_node_alpha_ssm3(codec);
                 // use reduced volume - from 0x48 to 0x80 - same reduction as for MAXs -24dB
                 //cs_8409_setup_amp_ssm3(codec, 0x28, 0x80);
                 //cs_8409_setup_amp_ssm3(codec, 0x2a, 0x80);
-                cs_8409_setup_amp_ssm3(codec, 0x28, 0x48);
-                cs_8409_setup_amp_ssm3(codec, 0x2a, 0x48);
+                cs_8409_setup_amp_ssm3(codec, 0x28, 0x20, 0x00);
+                cs_8409_setup_amp_ssm3(codec, 0x2a, 0x30, 0x00);
         }
         else {
                 dev_info(hda_codec_dev(codec), "UNKNOWN subsystem id 0x%08x",codec->core.subsystem_id);
@@ -1006,16 +1006,16 @@ static void cs_8409_setup_amps34(struct hda_codec *codec)
                 // use reduced volume - from 0x01 to 0x30 - now passing as argument
                 //cs_8409_setup_amp_max(codec, 0x74, 0x30);
                 //cs_8409_setup_amp_max(codec, 0x72, 0x30);
-                cs_8409_setup_amp_max(codec, 0x74, 0x01);
-                cs_8409_setup_amp_max(codec, 0x72, 0x01);
+                cs_8409_setup_amp_max(codec, 0x74, 0x01, 0x01);
+                cs_8409_setup_amp_max(codec, 0x72, 0x01, 0x01);
         }
         else if (codec->core.subsystem_id == 0x106b3300 || codec->core.subsystem_id == 0x106b3600) {
                 //setup_node_alpha_ssm3(codec);
                 // use reduced volume - from 0x48 to 0x80 - same reduction as for MAXs -24dB
                 //cs_8409_setup_amp_ssm3(codec, 0x2c, 0x80);
                 //cs_8409_setup_amp_ssm3(codec, 0x2e, 0x80);
-                cs_8409_setup_amp_ssm3(codec, 0x2c, 0x48);
-                cs_8409_setup_amp_ssm3(codec, 0x2e, 0x48);
+                cs_8409_setup_amp_ssm3(codec, 0x2c, 0x20, 0x01);
+                cs_8409_setup_amp_ssm3(codec, 0x2e, 0x30, 0x01);
         }
         else {
                 dev_info(hda_codec_dev(codec), "UNKNOWN subsystem id 0x%08x",codec->core.subsystem_id);
@@ -1102,7 +1102,7 @@ static void play_sync_converters_on(struct hda_codec *codec)
 
 
 
-static void cs_8409_setup_amp_max(struct hda_codec *codec, int amp_address, int amp_volume)
+static void cs_8409_setup_amp_max(struct hda_codec *codec, int amp_address, int amp_volume, int channel)
 {
         //int retval;
 
@@ -1136,7 +1136,7 @@ static void cs_8409_setup_amp_max(struct hda_codec *codec, int amp_address, int 
         cs_8409_vendor_i2cWrite(codec, amp_address, 0x0014, 0x00e4, 0); // snd_hda
         cs_8409_vendor_i2cWrite(codec, amp_address, 0x0015, 0x0001, 0); // snd_hda
         cs_8409_vendor_i2cWrite(codec, amp_address, 0x0016, 0x0000, 0); // snd_hda
-        cs_8409_vendor_i2cWrite(codec, amp_address, 0x0018, 0x0000, 0); // snd_hda
+        cs_8409_vendor_i2cWrite(codec, amp_address, 0x0018, 0x0003, 1); // snd_hda
         cs_8409_vendor_i2cWrite(codec, amp_address, 0x0019, 0x0000, 0); // snd_hda
         cs_8409_vendor_i2cWrite(codec, amp_address, 0x002d, amp_volume, 0); // snd_hda
         cs_8409_vendor_i2cWrite(codec, amp_address, 0x002e, 0x0005, 0); // snd_hda
@@ -1152,7 +1152,7 @@ static void cs_8409_setup_amp_max(struct hda_codec *codec, int amp_address, int 
 
 }
 
-static void cs_8409_setup_amp_ssm3(struct hda_codec *codec, int amp_address, int amp_volume)
+static void cs_8409_setup_amp_ssm3(struct hda_codec *codec, int amp_address, int amp_volume, int channel)
 {
         //int retval;
 
@@ -1167,7 +1167,7 @@ static void cs_8409_setup_amp_ssm3(struct hda_codec *codec, int amp_address, int
 //      snd_hda i2cWrite      i2c address 0x28 i2c            reg 0x0232 i2c data 0x0032   reg anal: DACControl              : 32-48kHz SampleRate DACLowPower DACHighPass DACSoftVol
 //      snd_hda i2cWrite      i2c address 0x28 i2c            reg 0x0000 i2c data 0x0000   reg anal: PowerControl            : PowerOn BVSenseOn
 
-        cs_8409_vendor_i2cWrite(codec, amp_address, 0x0005, 0x0000, 1); // snd_hda
+        cs_8409_vendor_i2cWrite(codec, amp_address, 0x0005, channel, 1); // snd_hda
         cs_8409_vendor_i2cWrite(codec, amp_address, 0x0001, 0x0011, 1); // snd_hda
         cs_8409_vendor_i2cWrite(codec, amp_address, 0x0003, amp_volume, 1); // snd_hda
         cs_8409_vendor_i2cWrite(codec, amp_address, 0x0004, 0x0051, 1); // snd_hda
@@ -1722,72 +1722,6 @@ static int cs_8409_boot_setup_real(struct hda_codec *codec)
 
         // I think Im going to disable the following as we appear to have a stream id here
         // but under linux we do not have a stream at all at this boot stage
-
-        if (0)
-        {
-
-                // this is not quite correct - cs_8409_setup_TDM_amps12 will write a null stream id etc
-                // but the actual logged version does not - although does update format
-                // this may be because Apple is caching the stream format/id similar to linux and
-                // at this point we have already set a null stream id - but because the above disable also
-                // cleared the format we get a re-setup of the the format
-                //putative_enable1_TDM_6462(codec);
-                cs_8409_setup_TDM_amps12(codec, 1, 1);
-
-                //amps_disable2_6462(codec);
-                cs_8409_disable_amps12(codec);
-
-                // see above notes for putative_enable1_TDM_6462
-                //putative_enable1_TDM_7472(codec);
-                cs_8409_setup_TDM_amps34(codec, 1);
-
-                //amps_disable2_7472(codec);
-                cs_8409_disable_amps34(codec);
-
-                // so this does not set the channel id for node 0x03 to 0x2 but cs_8409_sync_converters_on does
-                // is this significant??
-                // does suggest this function reads the initial stream id then rewrites at the end
-                //sync_converters2(codec);
-                cs_8409_sync_converters_on(codec, 1);
-
-
-                // so this also not quite same - we actually have a stream id here on OSX
-                // but at the boot stage dont think we have this in linux
-                //enable2_TDM2_6462(codec);
-                cs_8409_setup_TDM_amps12(codec, 1, 1);
-
-                //amps_enable2_6462(codec);
-                cs_8409_setup_amps12(codec);
-
-                // see above
-                //enable2_TDM2_7472(codec);
-                cs_8409_setup_TDM_amps34(codec, 1);
-
-                //amps_enable2_7472(codec);
-                cs_8409_setup_amps34(codec);
-
-                //sync_converters3(codec);
-                cs_8409_sync_converters_on(codec, 1);
-
-
-                // I dont get this - sync_converters3 sets the stream id/channel id to non-zero
-                // but here when we read the stream id/channel id its 0??
-                //sync_converters4(codec);
-                cs_8409_sync_converters_off(codec, 1);
-
-                //amps_disable3_6462(codec);
-                cs_8409_disable_amps12(codec);
-
-                //putative_disable3_TDM_6462(codec);
-                cs_8409_disable_TDM_amps12(codec);
-
-                //amps_disable3_7472(codec);
-                cs_8409_disable_amps34(codec);
-
-                //putative_disable3_TDM_7472(codec);
-                cs_8409_disable_TDM_amps34(codec);
-
-        }
 
         // this is best guess what these volume functions are doing
 	// as from the log there is no change in output volume or muting
